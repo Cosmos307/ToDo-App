@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS tasks (
         'cancelled'
     ) NOT NULL DEFAULT 'pending',
     due_date TIMESTAMP,
-    created_at DEFAULT CURRENT_TIMESTAMP,
-    updated_at DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
@@ -46,7 +46,7 @@ VALUES
 INSERT INTO categories (title, user_id)
 VALUES 
     ('Todo-App', 1),
-    ('Welt retten'2);
+    ('Welt retten', 2);
 
 -- Example data for tasks
 INSERT INTO tasks (title, description, category_id, priority, status, due_date)
