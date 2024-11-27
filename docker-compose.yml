@@ -1,0 +1,22 @@
+services:
+  database:
+    image: mysql:9.1
+    container_name: database
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=todo_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql-database:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - todo-network
+
+volumes:
+  mysql-database:
+
+networks:
+  todo-network:
