@@ -56,7 +56,3 @@ VALUES
     ('frontend', 'Frontend für die Todo-App implementieren', 1, 'medium', 'blocked', '2024-12-10 00:00:00'),
     ('Schlafen', 'Bis Mittag schlafen und Abends früh schlafen gehen', 2, 'high', 'on_hold', '2024-12-10 00:00:00'),
     ('Essen', 'Früh essen und Abend essen', 1, 'highest', 'pending', '2024-12-10 00:00:00');
-
--- Grant privileges to the user1
-GRANT ALL PRIVILEGES ON todo_app.* TO 'todo_user'@'%';
-FLUSH PRIVILEGES;

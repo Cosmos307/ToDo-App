@@ -30,14 +30,14 @@ func Init() {
 	for {
 		// Connect to the database
 		if db, err = sql.Open("mysql", dsn); err != nil {
-			log.Fatalf("Error connecting to the database: %v", err)
+			log.Printf("Error connecting to the database: %v", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
 
 		// Test connection
 		if pingError := db.Ping(); pingError != nil {
-			log.Fatalf("Error pinging the database: %v", pingError)
+			log.Printf("Error pinging the database: %v", pingError)
 			time.Sleep(5 * time.Second)
 			continue
 		}
