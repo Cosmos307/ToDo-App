@@ -4,49 +4,40 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
+	"github.com/Cosmos307/todo-app/api/internal/config"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
-
-// Load database configuration data from .env and connect api with database
-func Init() {
-	var err error
-
-	// Load environment variables
-	dbName := os.Getenv("MYSQL_DB")
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-
+func NewDB(cfg *config.Config) (*sql.DB, error) {
 	// Set Data Source Name
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
+
+	var db *sql.DB
+	var err error
+	maxRetries := 5
+	retryInterval := 5 * time.Second
 
 	// Connect to the database with retries
-	for {
+	for i := 0; i < maxRetries; i++ {
 		// Connect to the database
 		if db, err = sql.Open("mysql", dsn); err != nil {
 			log.Printf("Error connecting to the database: %v", err)
-			time.Sleep(5 * time.Second)
+			time.Sleep(5 * retryInterval)
 			continue
 		}
 
 		// Test connection
 		if pingError := db.Ping(); pingError != nil {
 			log.Printf("Error pinging the database: %v", pingError)
-			time.Sleep(5 * time.Second)
+			time.Sleep(5 * retryInterval)
 			continue
 		}
 
 		fmt.Println("Success connecting to the database")
-		break
+		return db, nil
 	}
-}
 
-func GetDB() *sql.DB {
-	return db
+	return nil, fmt.Errorf("failed to connect to the database after %d attempts: %v", maxRetries, err)
 }
