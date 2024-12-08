@@ -14,8 +14,8 @@ type CategoryHandler struct {
 	repo repository.CategoryRepository
 }
 
-func NewCategoryHandler(repo repository.CategoryRepository) CategoryHandler {
-	return CategoryHandler{repo: repo}
+func NewCategoryHandler(repo repository.CategoryRepository) *CategoryHandler {
+	return &CategoryHandler{repo: repo}
 }
 
 func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
