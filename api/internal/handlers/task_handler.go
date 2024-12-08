@@ -61,7 +61,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, task)
 }
 
-func (h *TaskHandler) UpdateTask(c *gin.Context) {
+func (h *TaskHandler) UpdateTaskByID(c *gin.Context) {
 	taskID, err := strconv.Atoi(c.Param("taskID"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
@@ -76,7 +76,7 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 		log.Println("ID in JSON body does not match URL ID. Ignoring body ID.")
 	}
 	task.ID = taskID
-	err = h.repo.UpdateTask(&task)
+	err = h.repo.UpdateTaskByID(&task)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
