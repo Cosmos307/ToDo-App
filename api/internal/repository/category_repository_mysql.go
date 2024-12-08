@@ -24,7 +24,7 @@ func (r *CategoryRepositoryMySQL) CreateCategory(category *models.Category) erro
 	return err
 }
 
-func (r *CategoryRepositoryMySQL) UpdateCategory(category *models.Category) error {
+func (r *CategoryRepositoryMySQL) UpdateCategoryByID(category *models.Category) error {
 	err := r.db.Save(category).Error
 	return err
 }
