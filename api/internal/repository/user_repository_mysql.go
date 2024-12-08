@@ -24,7 +24,7 @@ func (r *UserRepositoryMySQL) CreateUser(user *models.User) error {
 	return err
 }
 
-func (r *UserRepositoryMySQL) UpdateUser(user *models.User) error {
+func (r *UserRepositoryMySQL) UpdateUserByID(user *models.User) error {
 	err := r.db.Save(user).Error
 	return err
 }
