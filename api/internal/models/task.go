@@ -6,6 +6,7 @@ type Task struct {
 	ID          int       `gorm:"primaryKey;autoIncrement"`
 	Title       string    `gorm:"type:varchar(255);not null"`
 	Description string    `gorm:"type:text"`
+	User        User      `gorm:"foreignKey:UserID;references:ID"`
 	Category    Category  `gorm:"foreignKey:CategoryID;references:ID"`
 	Priority    string    `gorm:"type:enum('highest', 'high', 'medium', 'low', 'lowest');default:'medium';not null)"`
 	Status      string    `gorm:"type:enum('pending', 'in_progress', 'completed', 'on_hold', 'blocked', 'cancelled');default:'pending';not null"`

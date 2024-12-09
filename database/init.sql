@@ -1,4 +1,6 @@
-CREATE DATABASE IF NOT EXISTS todo_app;
+CREATE DATABASE IF NOT EXISTS todo_db;
+
+USE todo_db;
 
 CREATE TABLE IF NOT EXISTS users(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -14,13 +16,14 @@ CREATE TABLE IF NOT EXISTS categories (
     user_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
+    user_id int,
     category_id int,
     priority ENUM ('highest', 'high', 'medium', 'low', 'lowest') NOT NULL DEFAULT 'medium',
     status ENUM(
@@ -34,7 +37,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     due_date TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Example data for users
@@ -50,10 +54,10 @@ VALUES
     ('Welt retten', 2);
 
 -- Example data for tasks
-INSERT INTO tasks (title, description, category_id, priority, status, due_date)
+INSERT INTO tasks (title, description, user_id, category_id, priority, status, due_date)
 VALUES
-    ('datenbank', 'Datenbank für die Todo-App implementieren', 1, 'highest', 'in_progress', '2024-11-30 00:00:00'),
-    ('backend', 'Backend für die Todo-App implementieren', 1, 'high', 'on_hold', '2024-12-05 00:00:00'),
-    ('frontend', 'Frontend für die Todo-App implementieren', 1, 'medium', 'blocked', '2024-12-10 00:00:00'),
-    ('Schlafen', 'Bis Mittag schlafen und Abends früh schlafen gehen', 2, 'high', 'on_hold', '2024-12-10 00:00:00'),
-    ('Essen', 'Früh essen und Abend essen', 1, 'highest', 'pending', '2024-12-10 00:00:00');
+    ('datenbank', 'Datenbank für die Todo-App implementieren', 1, 1, 'highest', 'in_progress', '2024-11-30 00:00:00'),
+    ('backend', 'Backend für die Todo-App implementieren', 1, 1, 'high', 'on_hold', '2024-12-05 00:00:00'),
+    ('frontend', 'Frontend für die Todo-App implementieren', 1, 1, 'medium', 'blocked', '2024-12-10 00:00:00'),
+    ('Schlafen', 'Bis Mittag schlafen und Abends früh schlafen gehen', 2, 2, 'high', 'on_hold', '2024-12-10 00:00:00'),
+    ('Essen', 'Früh essen und Abend essen', 1, 1, 'highest', 'pending', '2024-12-10 00:00:00');

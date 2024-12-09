@@ -8,8 +8,8 @@ import (
 func RegisterCategoryRoutes(r *gin.Engine, h *handlers.CategoryHandler) {
 	categoryGroup := r.Group("/categories")
 
-	categoryGroup.GET("/:id", h.GetCategoryByID)
+	categoryGroup.GET("/:categoryID", h.GetCategoryByID)
 	categoryGroup.POST("/", h.CreateCategory)
-	categoryGroup.PUT("/:id", h.UpdateCategory)
-	categoryGroup.DELETE("/:id", h.DeleteCategoryByID)
+	categoryGroup.PUT("/:categoryID", h.UpdateCategoryByID)
+	categoryGroup.DELETE("/:categoryID", h.DeleteCategoryByID)
 }

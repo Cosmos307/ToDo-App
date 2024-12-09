@@ -45,7 +45,7 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, category)
 }
 
-func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
+func (h *CategoryHandler) UpdateCategoryByID(c *gin.Context) {
 	categoryID, err := strconv.Atoi(c.Param("categoryID"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category ID"})
@@ -60,7 +60,7 @@ func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
 		log.Println("ID in JSON body does not match URL ID. Ignoring body ID.")
 	}
 	category.ID = categoryID
-	if err := h.repo.UpdateCategory(&category); err != nil {
+	if err := h.repo.UpdateCategoryByID(&category); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

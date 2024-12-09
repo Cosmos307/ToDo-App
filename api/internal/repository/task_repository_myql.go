@@ -29,7 +29,7 @@ func (r *TaskRepositoryMySQL) CreateTask(task *models.Task) error {
 	return r.db.Create(task).Error
 }
 
-func (r *TaskRepositoryMySQL) UpdateTask(task *models.Task) error {
+func (r *TaskRepositoryMySQL) UpdateTaskByID(task *models.Task) error {
 	return r.db.Save(task).Error
 }
 

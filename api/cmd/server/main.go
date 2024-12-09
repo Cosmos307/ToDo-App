@@ -25,12 +25,17 @@ func main() {
 		log.Fatal("Database connection is nil")
 	}
 
-	categoryRepo := repository.NewCategoryRepositoryMySQL(database)
-	categoryHandler := handlers.NewCategoryHandler(categoryRepo)
-
 	router := gin.Default()
 
-	routes.RegisterRoutes(router, categoryHandler)
+	userRepository := repository.NewUserRepositoryMySQL(database)
+	taskRepository := repository.NewTaskRepositoryMySQL(database)
+	categoryRepository := repository.NewCategoryRepositoryMySQL(database)
+
+	userHandler := handlers.NewUserHandler(userRepository)
+	taskHandler := handlers.NewTaskHandler(taskRepository)
+	categoryHandler := handlers.NewCategoryHandler(categoryRepository)
+
+	routes.RegisterRoutes(router, userHandler, taskHandler, categoryHandler)
 
 	port := os.Getenv("API_PORT")
 	fmt.Printf("Server running on port %s\n", port)

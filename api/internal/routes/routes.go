@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(r *gin.Engine,
-	categoryHandler *handlers.CategoryHandler) {
-
+func RegisterRoutes(r *gin.Engine, userHandler *handlers.UserHandler, taskHandler *handlers.TaskHandler, categoryHandler *handlers.CategoryHandler) {
+	RegisterUserRoutes(r, userHandler)
+	RegisterTaskRoutes(r, taskHandler)
 	RegisterCategoryRoutes(r, categoryHandler)
 }
