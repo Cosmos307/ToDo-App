@@ -23,3 +23,6 @@ go.work.sum
 
 #bin file
 api/bin
+
+# SQL Tools connection
+settings.json
