@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/Cosmos307/todo-app/api/internal/handlers"
@@ -40,4 +41,25 @@ func TestGetCategoryByID(t *testing.T) {
 	assert.Equal(t, mockCategory.ID, category.ID, "Expected category ID %d, got %d", mockCategory.ID, category.ID)
 	assert.Equal(t, mockCategory.Title, category.Title, "Expected category title %s, got %s", mockCategory.Title, category.Title)
 
+}
+
+func TestCreateCategory(t *testing.T) {
+	mockRepo := mocks.NewMockCategoryRepository()
+	handler := handlers.NewCategoryHandler(mockRepo)
+
+	mockCategory := &models.Category{Title: "CreatedCategory"}
+	jsonCategory, err := json.Marshal(mockCategory)
+	assert.NoError(t, err)
+
+	recorder := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(recorder)
+	c.Request = httptest.NewRequest("POST", "/categories/", strings.NewReader(string(jsonCategory)))
+	c.Request.Header.Set("Content-Type", "application/json")
+
+	handler.CreateCategory(c)
+	assert.Equal(t, http.StatusCreated, recorder.Code)
+
+	createdCategory, err := mockRepo.GetCategoryByID(0)
+	assert.NoError(t, err, "Failed to get created category")
+	assert.Equal(t, mockCategory.Title, createdCategory.Title, "Expected category title %s, got %s", mockCategory.Title, createdCategory.Title)
 }
