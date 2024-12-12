@@ -63,3 +63,29 @@ func TestCreateCategory(t *testing.T) {
 	assert.NoError(t, err, "Failed to get created category")
 	assert.Equal(t, mockCategory.Title, createdCategory.Title, "Expected category title %s, got %s", mockCategory.Title, createdCategory.Title)
 }
+
+func TestUpdateCategoryByID(t *testing.T) {
+	mockRepo := mocks.NewMockCategoryRepository()
+	handler := handlers.NewCategoryHandler(mockRepo)
+
+	mockCategory := &models.Category{Title: "Before update"}
+	mockRepo.CreateCategory(mockCategory)
+
+	mockCategory.Title = "After udpate"
+	updatedCategory := mockCategory
+	jsonUpdatedCategory, err := json.Marshal(&updatedCategory)
+	assert.NoError(t, err)
+
+	updateRecorder := httptest.NewRecorder()
+	updateC, _ := gin.CreateTestContext(updateRecorder)
+	updateC.Params = []gin.Param{{Key: "categoryID", Value: "0"}}
+	updateC.Request = httptest.NewRequest("PUT", "/categories/1", strings.NewReader(string(jsonUpdatedCategory)))
+	updateC.Request.Header.Set("Content-Type", "application/json")
+
+	handler.UpdateCategoryByID(updateC)
+	assert.Equal(t, http.StatusOK, updateRecorder.Code, "UpdateCategoryByID func expected status code %d, got %d", http.StatusOK, updateRecorder.Code)
+
+	updatedCategoryFromRepo, err := mockRepo.GetCategoryByID(0)
+	assert.NoError(t, err, "Failed to get updated category")
+	assert.Equal(t, &updatedCategory, &updatedCategoryFromRepo, "Expected category title %s, got %s", updatedCategory.Title, updatedCategoryFromRepo.Title)
+}
