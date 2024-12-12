@@ -38,11 +38,12 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := h.repo.CreateCategory(&category); err != nil {
+	createdCategory, err := h.repo.CreateCategory(&category)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, category)
+	c.JSON(http.StatusCreated, createdCategory)
 }
 
 func (h *CategoryHandler) UpdateCategoryByID(c *gin.Context) {

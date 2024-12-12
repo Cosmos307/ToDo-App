@@ -19,9 +19,13 @@ func (r *CategoryRepositoryMySQL) GetCategoryByID(categoryID int) (*models.Categ
 	return category, err
 }
 
-func (r *CategoryRepositoryMySQL) CreateCategory(category *models.Category) error {
+// check if category variable contains new id set by database
+func (r *CategoryRepositoryMySQL) CreateCategory(category *models.Category) (*models.Category, error) {
 	err := r.db.Create(category).Error
-	return err
+	if err != nil {
+		return nil, err
+	}
+	return category, err
 }
 
 func (r *CategoryRepositoryMySQL) UpdateCategoryByID(category *models.Category) error {
