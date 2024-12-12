@@ -25,8 +25,12 @@ func (r *TaskRepositoryMySQL) GetTaskByID(id int) (*models.Task, error) {
 	return &task, err
 }
 
-func (r *TaskRepositoryMySQL) CreateTask(task *models.Task) error {
-	return r.db.Create(task).Error
+func (r *TaskRepositoryMySQL) CreateTask(task *models.Task) (*models.Task, error) {
+	err := r.db.Create(task).Error
+	if err != nil {
+		return nil, err
+	}
+	return task, nil
 }
 
 func (r *TaskRepositoryMySQL) UpdateTaskByID(task *models.Task) error {

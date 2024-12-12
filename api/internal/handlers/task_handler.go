@@ -53,12 +53,12 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	err := h.repo.CreateTask(&task)
+	createdTask, err := h.repo.CreateTask(&task)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
-	c.JSON(http.StatusCreated, task)
+	c.JSON(http.StatusCreated, createdTask)
 }
 
 func (h *TaskHandler) UpdateTaskByID(c *gin.Context) {
