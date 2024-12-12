@@ -89,3 +89,24 @@ func TestUpdateCategoryByID(t *testing.T) {
 	assert.NoError(t, err, "Failed to get updated category")
 	assert.Equal(t, &updatedCategory, &updatedCategoryFromRepo, "Expected category title %s, got %s", updatedCategory.Title, updatedCategoryFromRepo.Title)
 }
+
+func TestDeleteCategoryByID(t *testing.T) {
+	mockRepo := mocks.NewMockCategoryRepository()
+	handler := handlers.NewCategoryHandler(mockRepo)
+
+	mockCategory := &models.Category{Title: "Category for deletion"}
+	_, err := mockRepo.CreateCategory(mockCategory)
+	assert.NoError(t, err, "error creation mockCategory via mockRepository")
+
+	recorder := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(recorder)
+	c.Params = []gin.Param{{Key: "categoryID", Value: "0"}}
+	c.Request = httptest.NewRequest("DELETE", "/categories/0", nil)
+
+	handler.DeleteCategoryByID(c)
+	assert.Equal(t, http.StatusNoContent, recorder.Code)
+
+	deletedCategory, err := mockRepo.GetCategoryByID(0)
+	assert.Error(t, err, "Expected error when getting deleted category")
+	assert.Nil(t, deletedCategory, "Expected deleted category to be nil")
+}
