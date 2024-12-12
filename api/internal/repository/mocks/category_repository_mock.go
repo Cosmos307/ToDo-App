@@ -30,12 +30,12 @@ func (m *MockCategoryRepository) CreateCategory(category *models.Category) (*mod
 	return m.categories[category.ID], nil
 }
 
-func (m *MockCategoryRepository) UpdateCategoryByID(category *models.Category) error {
+func (m *MockCategoryRepository) UpdateCategoryByID(category *models.Category) (*models.Category, error) {
 	if _, exists := m.categories[category.ID]; exists {
 		m.categories[category.ID] = category
-		return nil
+		return category, nil
 	}
-	return errors.New("category not found")
+	return nil, errors.New("category not found")
 }
 
 func (m *MockCategoryRepository) DeleteCategoryByID(categoryID int) error {

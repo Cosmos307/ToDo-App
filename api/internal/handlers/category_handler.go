@@ -43,7 +43,7 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, createdCategory)
+	c.JSON(http.StatusCreated, &createdCategory)
 }
 
 func (h *CategoryHandler) UpdateCategoryByID(c *gin.Context) {
@@ -61,11 +61,12 @@ func (h *CategoryHandler) UpdateCategoryByID(c *gin.Context) {
 		log.Println("ID in JSON body does not match URL ID. Ignoring body ID.")
 	}
 	category.ID = categoryID
-	if err := h.repo.UpdateCategoryByID(&category); err != nil {
+	updatedCategory, err := h.repo.UpdateCategoryByID(&category)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, category)
+	c.JSON(http.StatusOK, &updatedCategory)
 }
 
 func (h *CategoryHandler) DeleteCategoryByID(c *gin.Context) {

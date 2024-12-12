@@ -28,9 +28,12 @@ func (r *CategoryRepositoryMySQL) CreateCategory(category *models.Category) (*mo
 	return category, err
 }
 
-func (r *CategoryRepositoryMySQL) UpdateCategoryByID(category *models.Category) error {
+func (r *CategoryRepositoryMySQL) UpdateCategoryByID(category *models.Category) (*models.Category, error) {
 	err := r.db.Save(category).Error
-	return err
+	if err != nil {
+		return nil, err
+	}
+	return category, err
 }
 
 func (r *CategoryRepositoryMySQL) DeleteCategoryByID(categoryID int) error {
