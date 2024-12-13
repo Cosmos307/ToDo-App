@@ -33,8 +33,12 @@ func (r *TaskRepositoryMySQL) CreateTask(task *models.Task) (*models.Task, error
 	return task, nil
 }
 
-func (r *TaskRepositoryMySQL) UpdateTaskByID(task *models.Task) error {
-	return r.db.Save(task).Error
+func (r *TaskRepositoryMySQL) UpdateTaskByID(task *models.Task) (*models.Task, error) {
+	err := r.db.Save(task).Error
+	if err != nil {
+		return nil, err
+	}
+	return task, err
 }
 
 func (r *TaskRepositoryMySQL) DeleteTaskByID(id int) error {

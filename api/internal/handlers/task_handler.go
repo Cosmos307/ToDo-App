@@ -76,12 +76,12 @@ func (h *TaskHandler) UpdateTaskByID(c *gin.Context) {
 		log.Println("ID in JSON body does not match URL ID. Ignoring body ID.")
 	}
 	task.ID = taskID
-	err = h.repo.UpdateTaskByID(&task)
+	updatedTask, err := h.repo.UpdateTaskByID(&task)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
-	c.JSON(http.StatusOK, task)
+	c.JSON(http.StatusOK, updatedTask)
 }
 
 func (h *TaskHandler) DeleteTaskByID(c *gin.Context) {
