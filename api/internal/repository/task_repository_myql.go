@@ -13,10 +13,10 @@ func NewTaskRepositoryMySQL(db *gorm.DB) TaskRepository {
 	return &TaskRepositoryMySQL{db: db}
 }
 
-func (r *TaskRepositoryMySQL) GetTasksByUserID(userID int) ([]models.Task, error) {
+func (r *TaskRepositoryMySQL) GetTasksByUserID(userID int) []models.Task {
 	var tasks []models.Task
-	err := r.db.Where("user_id = ?", userID).Find(&tasks).Error
-	return tasks, err
+	r.db.Where("user_id = ?", userID).Find(&tasks)
+	return tasks
 }
 
 func (r *TaskRepositoryMySQL) GetTaskByID(id int) (*models.Task, error) {

@@ -24,12 +24,7 @@ func (h *TaskHandler) GetTasksByUserID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	var tasks []models.Task
-	tasks, err = h.repo.GetTasksByUserID(userID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	tasks := h.repo.GetTasksByUserID(userID)
 	c.JSON(http.StatusOK, tasks)
 }
 
