@@ -46,22 +46,25 @@ func TestGetTaskByUserID(t *testing.T) {
 
 }
 
-/*
-type TaskHandler struct {
-	repo repository.TaskRepository
-}
+func TestGetTaskByID(t *testing.T) {
+	mockRepo := mocks.NewMockTaskRepository()
+	handler := handlers.NewTaskHandler(mockRepo)
 
-func NewTaskHandler(repo repository.TaskRepository) *TaskHandler {
-	return &TaskHandler{repo: repo}
-}
+	mockTask := &models.Task{Title: "GetThisTask"}
+	createdTask, _ := mockRepo.CreateTask(mockTask)
 
-func (h *TaskHandler) GetTasksByUserID(c *gin.Context) {
-	userID, err := strconv.Atoi(c.Param("userID"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
-	}
-	tasks := h.repo.GetTasksByUserID(userID)
-	c.JSON(http.StatusOK, tasks)
+	recorder := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(recorder)
+	c.Params = []gin.Param{{Key: "taskID", Value: "0"}}
+
+	handler.GetTaskByID(c)
+
+	assert.Equal(t, http.StatusOK, recorder.Code, "Expected status code %d, got %d", http.StatusOK, recorder.Code)
+
+	var task models.Task
+	err := json.Unmarshal(recorder.Body.Bytes(), &task)
+	assert.NoError(t, err, "Failed to unmarshal response body")
+
+	assert.Equal(t, createdTask.Title, task.Title, "Expected title %s, got %s", createdTask.Title, task.Title)
+	assert.Equal(t, createdTask.ID, task.ID, "Expected ID %d, got %d", createdTask.ID, task.ID)
 }
-*/
