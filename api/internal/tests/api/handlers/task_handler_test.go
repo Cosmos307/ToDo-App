@@ -120,3 +120,22 @@ func TestUpdateTaskByID(t *testing.T) {
 	assert.Equal(t, updatedTask.ID, mockTask.ID, "Expected ID %s, got %s", mockTaskChanged.ID, updatedTask.ID)
 	assert.Equal(t, mockTaskChanged.Title, updatedTask.Title, "Expected title %s, got %s", mockTaskChanged.Title, updatedTask.Title)
 }
+
+func TestDeleteTaskByID(t *testing.T) {
+	mockRepo := mocks.NewMockTaskRepository()
+	handler := handlers.NewTaskHandler(mockRepo)
+
+	mockTask := &models.Task{Title: "ToDelete"}
+	mockRepo.CreateTask(mockTask)
+	assert.Equal(t, mockTask.ID, 0)
+
+	recorder := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(recorder)
+	c.Params = []gin.Param{{Key: "taskID", Value: "0"}}
+
+	handler.DeleteTaskByID(c)
+	assert.Equal(t, http.StatusNoContent, recorder.Code, "expected status code %d, got %d", http.StatusNoContent, recorder.Code)
+
+	_, err := mockRepo.GetTaskByID(0)
+	assert.Error(t, err, "Returned the element which should have been deleted")
+}
