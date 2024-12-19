@@ -91,3 +91,32 @@ func TestCreateTask(t *testing.T) {
 	assert.Equal(t, mockTask.Title, createdTask.Title, "Expected title %s, got %s", mockTask.Title, createdTask.Title)
 	assert.Equal(t, createdTask.ID, 0, "Expected ID 0")
 }
+
+func TestUpdateTaskByID(t *testing.T) {
+	mockRepo := mocks.NewMockTaskRepository()
+	handler := handlers.NewTaskHandler(mockRepo)
+
+	mockTask := &models.Task{Title: "Original"}
+	mockRepo.CreateTask(mockTask)
+	assert.Equal(t, mockTask.ID, 0)
+
+	mockTaskChanged := &models.Task{Title: "Changed"}
+	recorder := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(recorder)
+	c.Params = []gin.Param{{Key: "taskID", Value: "0"}}
+
+	jsonTask, err := json.Marshal(mockTaskChanged)
+	assert.NoError(t, err, "error marshalling mockTask")
+
+	c.Request = httptest.NewRequest("PUT", "/tasks/0", strings.NewReader(string(jsonTask)))
+	c.Request.Header.Set("Content-Type", "application")
+
+	handler.UpdateTaskByID(c)
+	var updatedTask models.Task
+	err = json.Unmarshal(recorder.Body.Bytes(), &updatedTask)
+	assert.NoError(t, err, "error unmarshal updatedTask")
+
+	assert.Equal(t, http.StatusOK, recorder.Code)
+	assert.Equal(t, updatedTask.ID, mockTask.ID, "Expected ID %s, got %s", mockTaskChanged.ID, updatedTask.ID)
+	assert.Equal(t, mockTaskChanged.Title, updatedTask.Title, "Expected title %s, got %s", mockTaskChanged.Title, updatedTask.Title)
+}
