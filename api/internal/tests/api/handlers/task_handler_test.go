@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/Cosmos307/todo-app/api/internal/handlers"
@@ -45,7 +46,6 @@ func TestGetTaskByUserID(t *testing.T) {
 	assert.Equal(t, mockTasks[1], tasks[1], "Expected mockTask %d, got %d", mockTasks[1], tasks[1])
 
 }
-
 func TestGetTaskByID(t *testing.T) {
 	mockRepo := mocks.NewMockTaskRepository()
 	handler := handlers.NewTaskHandler(mockRepo)
@@ -67,4 +67,27 @@ func TestGetTaskByID(t *testing.T) {
 
 	assert.Equal(t, createdTask.Title, task.Title, "Expected title %s, got %s", createdTask.Title, task.Title)
 	assert.Equal(t, createdTask.ID, task.ID, "Expected ID %d, got %d", createdTask.ID, task.ID)
+}
+
+func TestCreateTask(t *testing.T) {
+	mockRepo := mocks.NewMockTaskRepository()
+	handler := handlers.NewTaskHandler(mockRepo)
+
+	mockTask := &models.Task{Title: "CreateTask"}
+	jsonTask, _ := json.Marshal(mockTask)
+
+	recorder := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(recorder)
+	c.Request = httptest.NewRequest("POST", "/tasks", strings.NewReader(string(jsonTask)))
+	c.Request.Header.Set("Content-Type", "application/json")
+
+	handler.CreateTask(c)
+	assert.Equal(t, http.StatusCreated, recorder.Code)
+
+	var createdTask models.Task
+	err := json.Unmarshal(recorder.Body.Bytes(), &createdTask)
+	assert.NoError(t, err, "Failed to unmarshal response body")
+
+	assert.Equal(t, mockTask.Title, createdTask.Title, "Expected title %s, got %s", mockTask.Title, createdTask.Title)
+	assert.Equal(t, createdTask.ID, 0, "Expected ID 0")
 }
